@@ -1,3 +1,7 @@
+# --- Setup ---
+# The Theia IDE itself (C:\theia-ide-master) is baked directly into this VM image as a fully
+# built folder (source, node_modules, compiled output) - it is NOT downloaded or built here.
+# This script only installs what's needed to *run* it and wires up theiarun.ps1 to start it at boot.
 $dir = "C:\theia-setup-temp"
 if (!(Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
 
@@ -8,6 +12,8 @@ Invoke-WebRequest $url -OutFile "$dir\node.msi"
 Start-Process "msiexec.exe" -ArgumentList "/i `"$dir\node.msi`" /qn" -Wait
 
 # --- 2. Git ---
+# This Theia build has no bundled git binary (no dugite / @theia/git) - Source Control features
+# (diff, commit, blame) go through the vscode.git extension, which shells out to a system git.
 Write-Host "Installing Git..."
 $url = "https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/Git-2.47.1-64-bit.exe"
 Invoke-WebRequest $url -OutFile "$dir\git.exe"
